@@ -38,7 +38,7 @@ export const ContentEditable: React.FC<{
       }
     }
     focusOnLoad();
-  }, []);
+  }, [props.autoFocus]);
 
   function onChange(e: any) {
     if ($ref.current) {

@@ -1,7 +1,7 @@
 import produce from "immer";
 import { isEqual } from "lodash";
 import Peer from "peerjs";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { sanitizeContentEditable } from "../../components/ContentEditable/ContentEditable";
 import { IDrawAreaObjects } from "../../components/DrawArea/hooks/useDrawing";
@@ -121,7 +121,7 @@ export function useScene(props: IProps) {
     }
   }
 
-  function loadScene(newScene: ISavableScene) {
+  const loadScene = useCallback((newScene: ISavableScene) => {
     if (newScene) {
       setSceneToLoad({
         id: newScene.id,
@@ -132,7 +132,7 @@ export function useScene(props: IProps) {
         version: newScene.version,
       });
     }
-  }
+  }, []);
 
   function cloneAndLoadScene(newScene: ISavableScene) {
     if (newScene) {

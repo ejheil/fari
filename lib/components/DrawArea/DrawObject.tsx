@@ -37,19 +37,25 @@ export const DrawObject: React.FC<{
   const fill = isBlack ? theme.palette.background.default : props.object.color;
   const [$tokenRef, $setTokenRef] = useState<SVGGElement | null>(null);
 
-  function onPointerMove(event: PointerEvent) {
-    if (startEvent.current) {
-      props.onMove(startEvent.current, event);
-      startEvent.current = event;
-    }
-  }
-
-  function onPointerUp() {
-    startEvent.current = undefined;
-    setMoving(false);
-  }
+  const latestOnMove = useRef(props.onMove);
 
   useEffect(() => {
+    latestOnMove.current = props.onMove;
+  });
+
+  useEffect(() => {
+    function onPointerMove(event: PointerEvent) {
+      if (startEvent.current) {
+        latestOnMove.current(startEvent.current, event);
+        startEvent.current = event;
+      }
+    }
+
+    function onPointerUp() {
+      startEvent.current = undefined;
+      setMoving(false);
+    }
+
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerup", onPointerUp);
     return () => {

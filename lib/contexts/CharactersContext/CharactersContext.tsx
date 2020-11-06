@@ -56,7 +56,7 @@ export function useCharacters(props?: { localStorage: Storage }) {
     } catch (error) {
       console.error(error);
     }
-  }, [characters]);
+  }, [characters, localStorage]);
 
   function openManager(newMode: ManagerMode, callback?: IManagerCallback) {
     setMode(newMode);

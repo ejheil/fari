@@ -10,7 +10,7 @@ export const ScrollToTop: React.FC<{}> = (props) => {
     return () => {
       unlisten();
     };
-  }, []);
+  }, [history]);
 
   return null;
 };

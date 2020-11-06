@@ -15,18 +15,26 @@ export function usePeerConnections(options: {
   const [connectingToHost, setConnectingToHost] = useState(false);
   const [connectingToHostError, setConnectingToHostError] = useState(false);
 
+  const latestPeer = useRef(peer);
+  const latestOnHostDataReceive = useRef(options.onHostDataReceive);
+
   useEffect(() => {
+    latestPeer.current = peer;
+    latestOnHostDataReceive.current = options.onHostDataReceive;
+  });
+
+  useEffect(() => {
+    return subscribeForEvents();
+
     function subscribeForEvents() {
-      peer.on("error", onPeerErrorCallback);
+      latestPeer.current.on("error", onPeerErrorCallback);
       return () => {
-        peer.off("error", onPeerErrorCallback);
+        latestPeer.current.off("error", onPeerErrorCallback);
         connection.current?.off("open", onHostConnectionOpen);
         connection.current?.off("close", onHostConnectionClose);
         connection.current?.off("data", onHostDataReceive);
       };
     }
-
-    return subscribeForEvents();
   }, []);
 
   function onPeerErrorCallback(error: any) {
@@ -35,18 +43,21 @@ export function usePeerConnections(options: {
       setConnectingToHost(false);
     }
   }
+
   function onHostConnectionOpen() {
     setConnectionToHost(connection.current);
     setConnectingToHost(false);
     console.info("usePeerConnections: Connected To Host");
   }
+
   function onHostConnectionClose() {
     setConnectionToHost(undefined);
     setConnectingToHost(false);
     console.info("usePeerConnections: Disconnected From Host");
   }
+
   function onHostDataReceive(data: any) {
-    options.onHostDataReceive(data);
+    latestOnHostDataReceive.current(data);
   }
 
   return {

@@ -21,7 +21,7 @@ export function useCharacter(c?: ICharacter | undefined) {
     if (isDifferent || isMoreRecent) {
       setCharacter(c);
     }
-  }, [c]);
+  }, [c, character]);
 
   function loadTemplate(type: CharacterType) {
     setCharacter(

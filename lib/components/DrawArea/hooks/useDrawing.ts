@@ -80,13 +80,18 @@ export function useDrawing(props: {
   const onChangeTimeout = useRef<any | undefined>(undefined);
   const roughSVG = useRef<ReturnType<typeof rough.svg> | undefined>(undefined);
 
+  const latestOnChange = useRef(props.onChange);
+  useEffect(() => {
+    latestOnChange.current = props.onChange;
+  });
+
   useEffect(() => {
     const shouldUpdateLocalState =
       props.objects && props.objects.length !== objects.length;
     if (shouldUpdateLocalState || props.readonly) {
       setObjects(props.objects as IDrawAreaObjects);
     }
-  }, [props.objects]);
+  }, [objects.length, props.objects, props.readonly]);
 
   useEffect(() => {
     const shouldCallOnChange =

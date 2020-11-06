@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { ManagerMode } from "../../components/Manager/Manager";
 import { Page } from "../../components/Page/Page";
@@ -40,6 +40,11 @@ export const CharacterRoute: React.FC<{
     logger.info("Route:Character");
   }, []);
 
+  const openManager = useRef(charactersManager.actions.openManager);
+  useEffect(() => {
+    openManager.current = charactersManager.actions.openManager;
+  });
+
   useEffect(() => {
     const characterToLoad = charactersManager.state.characters.find(
       (s) => s.id === props.match.params.id
@@ -49,9 +54,14 @@ export const CharacterRoute: React.FC<{
       setSelectedCharacter(characterToLoad);
     } else {
       history.replace("/");
-      charactersManager.actions.openManager(ManagerMode.Manage);
+      openManager.current(ManagerMode.Manage);
     }
-  }, [props.match.params.id, charactersManager.state.characters]);
+  }, [
+    props.match.params.id,
+    charactersManager.state.characters,
+    charactersManager.actions,
+    history,
+  ]);
 
   const query = useQuery<"dialog">();
   const dialogMode = query.get("dialog") === "true";

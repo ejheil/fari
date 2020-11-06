@@ -32,18 +32,27 @@ export const SceneRoute: React.FC<{
     logger.info("Route:Scene");
   }, []);
 
+  const loadScene = sceneManager.actions.loadScene;
+  const openManager = scenesManager.actions.openManager;
+
   useEffect(() => {
     const sceneToLoad = scenesManager.state.scenes.find(
       (s) => s.id === props.match.params.id
     );
 
     if (sceneToLoad) {
-      sceneManager.actions.loadScene(sceneToLoad);
+      loadScene(sceneToLoad);
     } else {
       history.replace("/");
-      scenesManager.actions.openManager(ManagerMode.Manage);
+      openManager(ManagerMode.Manage);
     }
-  }, [props.match.params.id, scenesManager.state.scenes]);
+  }, [
+    props.match.params.id,
+    scenesManager.state.scenes,
+    history,
+    loadScene,
+    openManager,
+  ]);
 
   return (
     <>

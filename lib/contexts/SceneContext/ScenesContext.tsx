@@ -1,5 +1,5 @@
 import produce from "immer";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { ManagerMode } from "../../components/Manager/Manager";
 import { arraySort } from "../../domains/array/arraySort";
@@ -54,12 +54,15 @@ export function useScenes(props?: { localStorage: Storage }) {
     } catch (error) {
       console.error(error);
     }
-  }, [scenes]);
+  }, [localStorage, scenes]);
 
-  function openManager(newMode: ManagerMode, callback?: IManagerCallback) {
-    setMode(newMode);
-    managerCallback.current = callback;
-  }
+  const openManager = useCallback(
+    (newMode: ManagerMode, callback?: IManagerCallback) => {
+      setMode(newMode);
+      managerCallback.current = callback;
+    },
+    []
+  );
 
   function closeManager() {
     setMode(ManagerMode.Close);

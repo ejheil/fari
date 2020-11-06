@@ -58,22 +58,11 @@ export function useFudgeDice(rolls: Array<IDiceRoll>) {
       newColor = theme.palette.error.main;
     }
     setColor(newColor);
-  }, [rolling, realRoll]);
+  }, [rolling, realRoll, theme]);
 
   function setRollingState() {
     setRolling(true);
     setRoll(undefined);
-  }
-
-  function setFinalResult() {
-    setRolling(false);
-    setRoll(realRoll);
-
-    if (realRoll?.total === 4) {
-      Confetti.fireConfetti();
-    } else if (realRoll?.total === -4) {
-      Confetti.fireCannon();
-    }
   }
 
   useEffect(() => {
@@ -95,7 +84,17 @@ export function useFudgeDice(rolls: Array<IDiceRoll>) {
         clearTimeout(timeout);
       }
     };
-  }, [rolls.length]);
+
+    function setFinalResult() {
+      setRolling(false);
+      setRoll(realRoll);
+      if (realRoll?.total === 4) {
+        Confetti.fireConfetti();
+      } else if (realRoll?.total === -4) {
+        Confetti.fireCannon();
+      }
+    }
+  }, [rolls.length, realRoll, previousRolls]);
 
   return {
     state: {
