@@ -623,26 +623,41 @@ export const Scene: React.FC<IProps> = (props) => {
       },
     ]);
     const aspects = sceneManager.state.scene.sort ? sortedAspectIds : aspectIds;
-    const width = isLGAndUp ? "25%" : isMD ? "33%" : "100%";
+    // const width = isLGAndUp ? "25%" : isMD ? "33%" : "100%";
+
+    const cols = 5;
+    const forMagicGrid = [];
+    let col = 0;
+    // https://masonry-css-js.netlify.app/#2
+    while (col < cols) {
+      for (let i = 0; i < aspects.length; i += cols) {
+        const element = aspects[i + col];
+        if (element !== undefined) {
+          forMagicGrid.push(element);
+        }
+      }
+      col++;
+    }
+
+    // console.debug("forMagicGrid", forMagicGrid);
     return (
       <Box pb="2rem">
         {hasAspects && (
-          <MagicGridContainer
-            items={aspectIds.length}
-            deps={[
-              sceneManager.computed.playersWithCharacterSheets.length,
-              Object.keys(sceneManager.state.scene.aspects).length,
-              showCharacterCards,
-            ]}
+          <Box
+            className={css({
+              columnCount: cols,
+              columnGap: "1em",
+            })}
           >
-            {aspects.map((aspectId, index) => {
+            {forMagicGrid.map((aspectId, index) => {
               return (
                 <Box
                   key={aspectId}
                   className={cx(
                     css({
-                      width: width,
-                      padding: "0 .5rem 1.5rem .5rem",
+                      display: "inline-block",
+                      // margin: "0 0 1em",
+                      width: "100%",
                     })
                   )}
                 >
@@ -657,7 +672,7 @@ export const Scene: React.FC<IProps> = (props) => {
                 </Box>
               );
             })}
-          </MagicGridContainer>
+          </Box>
         )}
         {!hasAspects && (
           <Box pt="6rem" textAlign="center">
